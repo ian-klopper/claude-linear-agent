@@ -1,5 +1,14 @@
 # linear-routines-bridge
 
+## Two versions of this bridge
+
+There are two implementations of this idea. Pick the one that matches how you pay for Claude:
+
+- **This repo** drives Claude via [Claude Code Routines](https://claude.ai/code/routines). Use it if you want to lean on a Claude.ai subscription instead of paying for API usage. Honestly, it's a hacky workaround — it piggybacks on a consumer surface to avoid API billing.
+- **[NorthIsUp/claude-linear-agent](https://github.com/NorthIsUp/claude-linear-agent)** drives Claude via the Managed Agents Sessions API. Use it if you have an Anthropic API key. No Routine to configure, sessions persist across restarts, and it ships a Helm chart and multi-arch Docker images for production deploys.
+
+Both work. The fork is the cleaner integration; this repo exists for people who'd rather not put Anthropic usage on a credit card.
+
 ## What it does
 
 Bridges the gap between [Linear](https://linear.app) and [Claude Code Routines](https://claude.ai/code/routines).
@@ -124,7 +133,7 @@ ngrok http 3001
 ## Gotchas (worth knowing before you use it heavily)
 
 **1. Replies start a brand new Claude session.**
-Every time you reply to the agent in Linear, the bridge fires a fresh Claude Routine. Claude is told to read the prior Linear comments via MCP to catch up — but that means every reply re-reads context and re-clones the repo. It can get expensive with long back-and-forths. Keep replies meaningful.
+Every time you reply to the agent in Linear, the bridge fires a fresh Claude Routine. Claude is told to read the prior Linear comments via MCP to catch up — but that means every reply re-reads context and re-clones the repo. It can get expensive with long back-and-forths. Keep replies meaningful. *(The fork linked above doesn't have this limitation — its sessions are persistent.)*
 
 **2. No "done" signal.**
 The bridge doesn't know when Claude is finished. It posts the session link and moves on. You find out Claude is done either by watching the Claude session or by seeing a summary comment on the Linear issue (which is why MCP is recommended).
@@ -140,7 +149,7 @@ Anyone with `LINEAR_WEBHOOK_SECRET` can fake Linear events and burn your Anthrop
 
 ## Contributing
 
-Upfront: I'm an amateur developer. This project works for me but it's very likely to have bugs, rough edges, and things a more experienced engineer would do differently. If you spot something broken or see a better way to do it, please open an issue or PR — I'd genuinely welcome the feedback.
+If you spot something broken or see a better way to do it, please open an issue or PR — feedback welcome.
 
 ### Dev setup
 
